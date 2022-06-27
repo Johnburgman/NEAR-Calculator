@@ -1,13 +1,13 @@
 # A NEAR-calculator that obeys BODMAS
 
-This code is used to take an input of an expression as a string. It will then traverse through the whole string to solve the mathematical equation.
+This code is used to take an input of an expression as a string. It will then traverse through the whole string to solve the mathematical equation. Using the Infix-Potsfix Solution technique.
 
 The code will basically solve the basic arithmetic problems including:
-- addition
-- subtraction
-- multiplication
-- division
-- power
+- Addition
+- Subtraction
+- Multiplication
+- Division
+- Power
 
 It will solve this obeying the BODMAS rules.
 

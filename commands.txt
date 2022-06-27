@@ -2,17 +2,25 @@
 :~ near login
 
 //Creating a sub-account within my master account
-:~ near create-account calculator.johnburgman1.testnet --masterAccount johnburgman1.testnet --initialBalance 10
+:~ near create-account jbcalculator.johnburgman1.testnet --masterAccount johnburgman1.testnet --initialBalance 10
 
 //Deploying wasm to my NEAR testnet
-:~ near deploy --wasmFile target/wasm32-unknown-unknown/release/rust_calculator.wasm --accountId calculator.johnburgman1.testnet
+:~ near deploy --wasmFile target/wasm32-unknown-unknown/release/rust_calculator.wasm --accountId jbcalculator.johnburgman1.testnet
 
 //Initializing Smart Contract
-:~ near call calculator.johnburgman1.testnet new --accountId=johnburgman1.testnet
+:~ near call jbcalculator.johnburgman1.testnet new --accountId=johnburgman1.testnet
 
 //Invoking Methods
+//First method will be a call function, then a view fumction
     //Perfoming a Call Function
-    :~ near call calculator.johnburgman1.testnet solve_expression '{"n1": "1+1"}' --accountId=johnburgman1.testnet
+    :~ near call jbcalculator.johnburgman1.testnet solve_expression '{"n1": "1+1"}' --accountId=johnburgman1.testnet
+
+    The result is 2
 
     
-    :~ near call calculator.johnburgman1.testnet infix_to_postfix '{"expression": "1+1"}' --accountId=johnburgman1.testnenear view calculator.johnburgman1.testnet
+    :~ near call jbcalculator.johnburgman1.testnet infix_to_postfix '{"expression": "1+1"}' --accountId=johnburgman1.testnenet
+
+    //Perfoming a View Function
+    :~ near view jbcalculator.johnburgman1.testnet get_expression_result
+
+    :~ near view jbcalculator.johnburgman1.testnet get_expression_postfix    
