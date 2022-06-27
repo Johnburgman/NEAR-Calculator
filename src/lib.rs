@@ -1,14 +1,34 @@
+/// Import `serde` from `near_sdk` crate 
+use near_sdk::serde::{Serialize, Deserialize};
+
 /// Import `borsh` from `near_sdk` crate 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::{env, near_bindgen, PanicOnDefault};
 
 /// Main contract structure serialized with Borsh
 #[near_bindgen]
-#[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
-pub struct Calculator;
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, PanicOnDefault)]
+/// Implements both `serde` and `borsh` serialization.
+/// `serde` is typically useful when returning a struct in JSON format for a frontend.
+// This Struct should act as a template definition to all my products
+#[serde(crate = "near_sdk::serde")]
+pub struct Calculator {
+    postfix: String,
+    result: f32,
+}
 
 #[near_bindgen]
 impl Calculator {
+
+    // initializing the contract
+    #[init]
+    pub fn new() -> Calculator {
+        Calculator{
+            postfix: "".to_string(),
+            result: 0.0,
+        }        
+    }
+
     // a bool function that checks if a character is an operand
     pub fn is_operand ( &self, ch: char ) -> bool {
         if ch >= '0' && ch <= '9' {
@@ -109,8 +129,9 @@ impl Calculator {
             postfix.push(stack_char[stack_char.len() - 1]);
             stack_char.pop();
         }
-
-        postfix        
+        let res = &postfix;
+        self.postfix = res.to_owned();
+        postfix      
     } 
 
     // function that carries out the computation
@@ -186,10 +207,21 @@ impl Calculator {
         }
 
         if !stack_float.is_empty() {
+            self.result = stack_float[stack_float.len() - 1];
             stack_float[stack_float.len() - 1]
         }else{
+            self.result = stack_float[stack_float.len() - 1];
             -1.00
         }
+    }
+
+    pub fn get_expression_result(&self) -> f32 {
+        self.result
+    }
+
+    pub fn get_expression_postfix(&self) -> String {
+        let x = &self.postfix;
+        x.to_owned()
     }
 
 }
@@ -227,8 +259,9 @@ mod tests {
         let context = get_context(vec![], false);
         testing_env!(context);
 
-        let mut calculator = Calculator;
-        assert_eq!("2 4^ 2*", calculator.infix_to_postfix(String::from("(2^4)*2")))
+        let mut calculator = Calculator::new();
+        calculator.infix_to_postfix(String::from("(2^4)*2"));
+        assert_eq!("2 4^ 2*", calculator.postfix )
     }
 
     #[test] 
@@ -236,8 +269,8 @@ mod tests {
         let context = get_context(vec![], false);
         testing_env!(context); 
 
-         let mut calculator = Calculator;
-        assert_eq!(230400.0, calculator.solve_expression(String::from("(((((300*2)/5)*4)^2)+4)-4")));
-        //assert_eq!(2.0, calculator.solve_expression(String::from("1+1")));
+        let mut calculator = Calculator::new();
+        calculator.solve_expression(String::from("(((((300*2)/5)*4)^2)+4)-4"));
+        assert_eq!(230400.0, calculator.result);
     }
 }

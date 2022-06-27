@@ -1,0 +1,18 @@
+//Accsessing NEAR account 
+:~ near login
+
+//Creating a sub-account within my master account
+:~ near create-account calculator.johnburgman1.testnet --masterAccount johnburgman1.testnet --initialBalance 10
+
+//Deploying wasm to my NEAR testnet
+:~ near deploy --wasmFile target/wasm32-unknown-unknown/release/rust_calculator.wasm --accountId calculator.johnburgman1.testnet
+
+//Initializing Smart Contract
+:~ near call calculator.johnburgman1.testnet new --accountId=johnburgman1.testnet
+
+//Invoking Methods
+    //Perfoming a Call Function
+    :~ near call calculator.johnburgman1.testnet solve_expression '{"n1": "1+1"}' --accountId=johnburgman1.testnet
+
+    
+    :~ near call calculator.johnburgman1.testnet infix_to_postfix '{"expression": "1+1"}' --accountId=johnburgman1.testnenear view calculator.johnburgman1.testnet
